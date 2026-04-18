@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><style>body{font-family:monospace;padding:20px;background:#111;color:#eee}button{padding:12px 20px;background:#7c6bff;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;margin:8px}pre{background:#222;padding:16px;border-radius:8px;white-space:pre-wrap;word-break:break-all}</style></head>
+<body>
+<h2>Test Supabase</h2>
+<button onclick="testGet()">1. Test GET</button>
+<button onclick="testPost()">2. Test POST (insert)</button>
+<button onclick="testDelete()">3. Supprimer test</button>
+<pre id="out">Résultats ici...</pre>
+<script>
+const URL = 'https://eyafmqvgxlaqskbwcrdq.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5YWZtcXZneGxhcXNrYndjcmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0OTM1MzAsImV4cCI6MjA5MjA2OTUzMH0.t-as7f_AWwuytNzxzpXWpaZ9kK49bxn7f5TC1IOTWx8';
+
+const log = t => { document.getElementById('out').textContent += '\n' + t; };
+
+async function testGet() {
+  document.getElementById('out').textContent = '=== GET off_projets ===';
+  const r = await fetch(URL + '/rest/v1/off_projets?limit=3', {
+    headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+  });
+  log('Status: ' + r.status);
+  log('Body: ' + await r.text());
+}
+
+async function testPost() {
+  document.getElementById('out').textContent = '=== POST off_projets ===';
+  const r = await fetch(URL + '/rest/v1/off_projets', {
+    method: 'POST',
+    headers: {
+      'apikey': KEY,
+      'Authorization': 'Bearer ' + KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates,return=minimal'
+    },
+    body: JSON.stringify({
+      id: 'test123',
+      name: 'Projet Test',
+      who: 'herve',
+      missions: [],
+      depenses: []
+    })
+  });
+  log('Status: ' + r.status);
+  log('Body: ' + await r.text());
+}
+
+async function testDelete() {
+  document.getElementById('out').textContent = '=== DELETE test123 ===';
+  const r = await fetch(URL + '/rest/v1/off_projets?id=eq.test123', {
+    method: 'DELETE',
+    headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+  });
+  log('Status: ' + r.status);
+  log('Body: ' + await r.text());
+}
+</script>
+</body>
+</html>
